@@ -3,7 +3,7 @@ package com.survey.www.surveys.dto.command;
 import com.querydsl.core.annotations.QueryProjection;
 import com.survey.www.surveys.code.SurveyQuestionType;
 
-public record SurveyDetailCommand(Long surveyQuestionId
+public record SurveyDetailQuestionCommand(Long surveyQuestionId
                                 , SurveyQuestionType surveyQuestionType
                                 , String surveyQuestionNm
                                 , String surveyQuestionDescription
@@ -14,5 +14,5 @@ public record SurveyDetailCommand(Long surveyQuestionId
                                 , boolean isDeletedSurveyQuestionOption
                                 , Long surveyQuestionOptionParentId) {
     @QueryProjection
-    public SurveyDetailCommand {}
+    public SurveyDetailQuestionCommand {}
 }

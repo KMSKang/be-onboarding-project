@@ -11,15 +11,11 @@ import java.util.List;
 @Builder
 @Getter
 public class SurveyAnswerCreateRequest {
-    @Schema(title = "휴대폰번호", description = "사용자 휴대폰번호")
-    private String phone;
-
     @Schema(title = "항목", description = "답변을 받을 항목입니다")
     private List<SurveyAnswerQuestionCommand> surveyAnswerQuestions;
 
-    public SurveyAnswer toEntity(Survey survey) {
-        return SurveyAnswer.builder()
-                           .phone(phone)
+    public SurveyAnswers toEntity(Survey survey) {
+        return SurveyAnswers.builder()
                            .survey(survey)
                            .build();
     }
@@ -45,7 +41,7 @@ public class SurveyAnswerCreateRequest {
         @Schema(title = "고유번호", description = "리스트 고유번호입니다")
         private List<Long> surveyQuestionOptionIds;
 
-        public SurveyAnswerQuestions toEntity(SurveyAnswer surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
+        public SurveyAnswerQuestions toEntity(SurveyAnswers surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
             return SurveyAnswerQuestions.builder()
                                         .content(content)
                                         .surveyAnswer(surveyAnswer)

@@ -86,7 +86,7 @@ class SurveyServiceTest extends MyRestDoc {
         Long surveyId = 1L;
 
         // when
-        surveyService.detailSurveyQuestion(surveyId);
+        surveyService.detailQuestion(surveyId);
 
         // then
     }

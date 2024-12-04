@@ -46,4 +46,3 @@ public class Survey extends BaseEntity {
         this.account = account;
     }
 }
-

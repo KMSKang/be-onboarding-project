@@ -5,15 +5,14 @@ import com.survey.www.commons.response.CommonResponse;
 import com.survey.www.surveys.dto.request.SurveyAnswerCreateRequest;
 import com.survey.www.surveys.dto.request.SurveyCreateRequest;
 import com.survey.www.surveys.dto.request.SurveyUpdateRequest;
-import com.survey.www.surveys.dto.response.SurveyAnswerCreateResponse;
-import com.survey.www.surveys.dto.response.SurveyCreateResponse;
-import com.survey.www.surveys.dto.response.SurveyDetailResponse;
-import com.survey.www.surveys.dto.response.SurveyUpdateResponse;
+import com.survey.www.surveys.dto.response.*;
 import com.survey.www.surveys.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/surveys")
@@ -27,8 +26,8 @@ public class SurveyApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommonResponse<SurveyDetailResponse>> detailSurveyQuestion(@PathVariable("id") Long surveyId) {
-        return ResponseEntity.ok(new CommonResponse<>(surveyService.detailSurveyQuestion(surveyId)));
+    public ResponseEntity<CommonResponse<SurveyQuestionDetailResponse>> detailQuestion(@PathVariable("id") Long surveyId) {
+        return ResponseEntity.ok(new CommonResponse<>(surveyService.detailQuestion(surveyId)));
     }
 
     @PutMapping("/{id}")
@@ -36,8 +35,13 @@ public class SurveyApiController {
         return ResponseEntity.ok(new CommonResponse<>(surveyService.update(surveyId, surveyUpdateRequest)));
     }
 
-    @PostMapping("/{id}/answer")
+    @PostMapping("/{id}/answers")
     public ResponseEntity<CommonResponse<SurveyAnswerCreateResponse>> createAnswer(@PathVariable("id") Long surveyId, @RequestBody @Validated(ValidationSequence.class) SurveyAnswerCreateRequest surveyAnswerCreateRequest) {
         return ResponseEntity.ok(new CommonResponse<>(surveyService.createAnswer(surveyId, surveyAnswerCreateRequest)));
+    }
+
+    @GetMapping("/{id}/answers")
+    public ResponseEntity<CommonResponse<List<SurveyAnswerDetailResponse>>> detailAnswer(@PathVariable("id") Long surveyId) {
+        return ResponseEntity.ok(new CommonResponse<>(surveyService.detailAnswer(surveyId)));
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class SurveyDetailResponse {
+public class SurveyQuestionDetailResponse {
     private String surveyNm;
     private String description;
     private Boolean isDeleted;

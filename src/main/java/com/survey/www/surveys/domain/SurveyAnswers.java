@@ -12,24 +12,23 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class SurveyAnswer extends BaseEntity {
+public class SurveyAnswers extends BaseEntity {
     @Schema(title = "고유번호", description = "설문조사 답변 고유번호입니다")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Schema(title = "휴대폰번호", description = "사용자 휴대폰번호")
+    @Schema(title = "삭제 여부", description = "삭제 여부입니다")
     @Column(nullable = false)
-    private String phone;
+    private Boolean isDeleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
     @Builder
-    public SurveyAnswer(Long id, String phone, Survey survey) {
+    public SurveyAnswers(Long id, Survey survey) {
         this.id = id;
-        this.phone = phone;
         this.survey = survey;
     }
 }

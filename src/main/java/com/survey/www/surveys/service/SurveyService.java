@@ -4,14 +4,12 @@ import com.survey.www.accounts.domain.Account;
 import com.survey.www.accounts.service.AccountService;
 import com.survey.www.surveys.code.SurveyQuestionType;
 import com.survey.www.surveys.domain.*;
-import com.survey.www.surveys.dto.command.SurveyDetailCommand;
+import com.survey.www.surveys.dto.command.SurveyDetailAnswerCommand;
+import com.survey.www.surveys.dto.command.SurveyDetailQuestionCommand;
 import com.survey.www.surveys.dto.request.SurveyAnswerCreateRequest;
 import com.survey.www.surveys.dto.request.SurveyCreateRequest;
 import com.survey.www.surveys.dto.request.SurveyUpdateRequest;
-import com.survey.www.surveys.dto.response.SurveyAnswerCreateResponse;
-import com.survey.www.surveys.dto.response.SurveyCreateResponse;
-import com.survey.www.surveys.dto.response.SurveyDetailResponse;
-import com.survey.www.surveys.dto.response.SurveyUpdateResponse;
+import com.survey.www.surveys.dto.response.*;
 import com.survey.www.surveys.exception.SurveyException;
 import com.survey.www.surveys.exception.SurveyExceptionResult;
 import com.survey.www.surveys.repository.*;
@@ -43,17 +41,16 @@ public class SurveyService {
     }
 
     @Transactional(readOnly = true)
-    public SurveyDetailResponse detailSurveyQuestion(Long surveyId) {
+    public SurveyQuestionDetailResponse detailQuestion(Long surveyId) {
         Survey findSurvey = findSurveyById(surveyId);
-        List<SurveyDetailCommand> surveyDetailCommands = surveyQuestionsRepository.searchBySurveyId(surveyId);
-        List<SurveyDetailResponse.SurveyQuestionCommand> surveyQuestions = createSurveyQuestionCommands(surveyDetailCommands);
+        List<SurveyDetailQuestionCommand> surveyDetailCommands = surveyQuestionsRepository.searchBySurveyId(surveyId);
+        List<SurveyQuestionDetailResponse.SurveyQuestionCommand> surveyQuestions = createSurveyQuestionCommands(surveyDetailCommands);
         return createSurveyDetailResponse(findSurvey, surveyQuestions);
     }
 
     @Transactional
     public SurveyUpdateResponse update(Long surveyId, SurveyUpdateRequest surveyUpdateRequest) {
         Survey findSurvey = findSurveyById(surveyId);
-//        validateAccount(findSurvey.getAccount().getId());
         updateSurvey(findSurvey, surveyUpdateRequest);
         updateSurveyQuestions(surveyUpdateRequest.getSurveyQuestions());
         return new SurveyUpdateResponse(surveyId);
@@ -62,34 +59,46 @@ public class SurveyService {
     @Transactional
     public SurveyAnswerCreateResponse createAnswer(Long surveyId, SurveyAnswerCreateRequest surveyAnswerCreateRequest) {
         Survey findSurvey = findSurveyById(surveyId);
-        SurveyAnswer savedSurveyAnswer = savedSurveyAnswer(findSurvey, surveyAnswerCreateRequest);
+        SurveyAnswers savedSurveyAnswer = savedSurveyAnswer(findSurvey, surveyAnswerCreateRequest);
         savedSurveyAnswerQuestions(surveyAnswerCreateRequest.getSurveyAnswerQuestions(), savedSurveyAnswer);
         return new SurveyAnswerCreateResponse(savedSurveyAnswer.getId());
     }
 
-    private SurveyAnswer savedSurveyAnswer(Survey findSurvey, SurveyAnswerCreateRequest surveyAnswerCreateRequest) {
-        return surveyAnswerRepository.save(createSurveyAnswer(findSurvey, surveyAnswerCreateRequest));
-    }
+    @Transactional(readOnly = true)
+    public List<SurveyAnswerDetailResponse> detailAnswer(Long surveyId) {
+        List<SurveyAnswerDetailResponse> result = new ArrayList<>();
+        List<SurveyDetailAnswerCommand> surveyDetailAnswerCommands = surveyRepository.searchBySurveyId(surveyId);
 
-    private static SurveyAnswer createSurveyAnswer(Survey findSurvey, SurveyAnswerCreateRequest surveyAnswerCreateRequest) {
-        return surveyAnswerCreateRequest.toEntity(findSurvey);
-    }
+        Long currentQuestionId = null;
+        String currentQuestionNm = null;
+        SurveyQuestionType currentSurveyQuestionType = null;
+        List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList = new ArrayList<>();
+        int totalCnt = 0;
 
-    private void savedSurveyAnswerQuestions(List<SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand> surveyAnswerQuestions, SurveyAnswer savedSurveyAnswer) {
-        for (SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand surveyAnswerQuestionCommand : surveyAnswerQuestions) {
-            SurveyQuestions findSurveyQuestion = findSurveyQuestionById(surveyAnswerQuestionCommand.getSurveyQuestionId());
+        for (SurveyDetailAnswerCommand surveyDetailAnswerCommand : surveyDetailAnswerCommands) {
+            // 새로운 질문이 나타나면 기존 데이터를 result에 추가
+            if (!surveyDetailAnswerCommand.surveyQuestionId().equals(currentQuestionId)) {
+                processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionNm, answerCommandList, totalCnt);
 
-            List<SurveyAnswerQuestions> surveyAnswerQuestionsList = new ArrayList<>();
-            if (SurveyQuestionType.SHORT_ANSWER == surveyAnswerQuestionCommand.getSurveyQuestionType() || SurveyQuestionType.LONG_ANSWER == surveyAnswerQuestionCommand.getSurveyQuestionType()) {
-                surveyAnswerQuestionsList.add(createSurveyAnswerQuestion(surveyAnswerQuestionCommand, savedSurveyAnswer, findSurveyQuestion, null));
+                // 새 질문 초기화
+                currentQuestionId = surveyDetailAnswerCommand.surveyQuestionId();
+                currentQuestionNm = surveyDetailAnswerCommand.questionNm();
+                currentSurveyQuestionType = surveyDetailAnswerCommand.surveyQuestionType();
+                answerCommandList = new ArrayList<>();
+                totalCnt = 0;
             }
-            else {
-                for (Long surveyQuestionOptionId : surveyAnswerQuestionCommand.getSurveyQuestionOptionIds()) {
-                    surveyAnswerQuestionsList.add(createSurveyAnswerQuestion(surveyAnswerQuestionCommand, savedSurveyAnswer, findSurveyQuestion, findSurveyQuestionOptionById(surveyQuestionOptionId)));
-                }
-            }
-            surveyAnswerQuestionsRepository.saveAll(surveyAnswerQuestionsList);
+
+            // 선택형/서술형 질문 처리
+            processAnswer(surveyDetailAnswerCommand, answerCommandList);
+            totalCnt += surveyDetailAnswerCommand.selectedCnt().intValue(); // 선택형에서만 count 증가
         }
+
+        // 마지막 질문 처리
+        if (!answerCommandList.isEmpty() && currentQuestionNm != null) {
+            processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionNm, answerCommandList, totalCnt);
+        }
+
+        return result;
     }
 
     private void validateAccount(Long accountId) {
@@ -121,7 +130,7 @@ public class SurveyService {
         }
     }
 
-    private SurveyAnswerQuestions createSurveyAnswerQuestion(SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand surveyAnswerQuestionCommand, SurveyAnswer savedSurveyAnswer, SurveyQuestions findSurveyQuestion, SurveyQuestionOptions findSurveyQuestionOption) {
+    private SurveyAnswerQuestions createSurveyAnswerQuestion(SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand surveyAnswerQuestionCommand, SurveyAnswers savedSurveyAnswer, SurveyQuestions findSurveyQuestion, SurveyQuestionOptions findSurveyQuestionOption) {
         return surveyAnswerQuestionCommand.toEntity(savedSurveyAnswer, findSurveyQuestion, findSurveyQuestionOption);
     }
 
@@ -164,54 +173,54 @@ public class SurveyService {
                                     .collect(Collectors.toList());
     }
 
-    private static List<SurveyDetailResponse.SurveyQuestionCommand> createSurveyQuestionCommands(List<SurveyDetailCommand> surveyDetailCommands) {
-        List<SurveyDetailResponse.SurveyQuestionCommand> resultList = new ArrayList<>();
+    private static List<SurveyQuestionDetailResponse.SurveyQuestionCommand> createSurveyQuestionCommands(List<SurveyDetailQuestionCommand> surveyDetailCommands) {
+        List<SurveyQuestionDetailResponse.SurveyQuestionCommand> resultList = new ArrayList<>();
 
-        Map<Long, List<SurveyDetailCommand>> groupedByQuestionId = surveyDetailCommands.stream().collect(Collectors.groupingBy(SurveyDetailCommand::surveyQuestionId));
-        for (Map.Entry<Long, List<SurveyDetailCommand>> entry : groupedByQuestionId.entrySet()) {
-            List<SurveyDetailCommand> commands = entry.getValue();
+        Map<Long, List<SurveyDetailQuestionCommand>> groupedByQuestionId = surveyDetailCommands.stream().collect(Collectors.groupingBy(SurveyDetailQuestionCommand::surveyQuestionId));
+        for (Map.Entry<Long, List<SurveyDetailQuestionCommand>> entry : groupedByQuestionId.entrySet()) {
+            List<SurveyDetailQuestionCommand> commands = entry.getValue();
             if (commands.isEmpty()) {
                 continue;
             }
 
             Long surveyQuestionId = entry.getKey();
-            List<SurveyDetailResponse.SurveyQuestionOptionCommand> surveyQuestionOptions = new ArrayList<>();
-            for (SurveyDetailCommand command : commands) {
+            List<SurveyQuestionDetailResponse.SurveyQuestionOptionCommand> surveyQuestionOptions = new ArrayList<>();
+            for (SurveyDetailQuestionCommand command : commands) {
                 if (command.surveyQuestionOptionParentId() != null && command.surveyQuestionOptionParentId().equals(surveyQuestionId)) {
                     surveyQuestionOptions.add(
-                            SurveyDetailResponse.SurveyQuestionOptionCommand.builder()
-                                                                            .id(command.surveyQuestionOptionId())
-                                                                            .content(command.surveyQuestionOptionContent())
-                                                                            .isDeleted(command.isDeletedSurveyQuestionOption())
-                                                                            .build()
+                            SurveyQuestionDetailResponse.SurveyQuestionOptionCommand.builder()
+                                                                                    .id(command.surveyQuestionOptionId())
+                                                                                    .content(command.surveyQuestionOptionContent())
+                                                                                    .isDeleted(command.isDeletedSurveyQuestionOption())
+                                                                                    .build()
                     );
                 }
             }
 
-            SurveyDetailCommand firstCommand = commands.get(0);
+            SurveyDetailQuestionCommand firstCommand = commands.get(0);
             resultList.add(
-                    SurveyDetailResponse.SurveyQuestionCommand.builder()
-                                                              .id(surveyQuestionId)
-                                                              .surveyQuestionType(firstCommand.surveyQuestionType())
-                                                              .questionNm(firstCommand.surveyQuestionNm())
-                                                              .description(firstCommand.surveyQuestionDescription())
-                                                              .isRequired(firstCommand.isRequired())
-                                                              .isDeleted(firstCommand.isDeletedSurveyQuestion())
-                                                              .surveyQuestionOptions(surveyQuestionOptions)
-                                                              .build()
+                    SurveyQuestionDetailResponse.SurveyQuestionCommand.builder()
+                                                                      .id(surveyQuestionId)
+                                                                      .surveyQuestionType(firstCommand.surveyQuestionType())
+                                                                      .questionNm(firstCommand.surveyQuestionNm())
+                                                                      .description(firstCommand.surveyQuestionDescription())
+                                                                      .isRequired(firstCommand.isRequired())
+                                                                      .isDeleted(firstCommand.isDeletedSurveyQuestion())
+                                                                      .surveyQuestionOptions(surveyQuestionOptions)
+                                                                      .build()
             );
         }
 
         return resultList;
     }
 
-    private static SurveyDetailResponse createSurveyDetailResponse(Survey survey, List<SurveyDetailResponse.SurveyQuestionCommand> surveyQuestions) {
-        return SurveyDetailResponse.builder()
-                                   .surveyNm(survey.getSurveyNm())
-                                   .description(survey.getDescription())
-                                   .isDeleted(survey.getIsDeleted())
-                                   .surveyQuestions(surveyQuestions)
-                                   .build();
+    private static SurveyQuestionDetailResponse createSurveyDetailResponse(Survey survey, List<SurveyQuestionDetailResponse.SurveyQuestionCommand> surveyQuestions) {
+        return SurveyQuestionDetailResponse.builder()
+                                           .surveyNm(survey.getSurveyNm())
+                                           .description(survey.getDescription())
+                                           .isDeleted(survey.getIsDeleted())
+                                           .surveyQuestions(surveyQuestions)
+                                           .build();
     }
 
     private Survey findSurveyById(Long id) {
@@ -236,5 +245,79 @@ public class SurveyService {
             throw new SurveyException(SurveyExceptionResult.NOT_EXIST_SURVEY_QUESTION_OPTION);
         }
         return surveyQuestionOptions;
+    }
+
+    private SurveyAnswers savedSurveyAnswer(Survey findSurvey, SurveyAnswerCreateRequest surveyAnswerCreateRequest) {
+        return surveyAnswerRepository.save(createSurveyAnswer(findSurvey, surveyAnswerCreateRequest));
+    }
+
+    private static SurveyAnswers createSurveyAnswer(Survey findSurvey, SurveyAnswerCreateRequest surveyAnswerCreateRequest) {
+        return surveyAnswerCreateRequest.toEntity(findSurvey);
+    }
+
+    private void savedSurveyAnswerQuestions(List<SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand> surveyAnswerQuestions, SurveyAnswers savedSurveyAnswer) {
+        for (SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand surveyAnswerQuestionCommand : surveyAnswerQuestions) {
+            SurveyQuestions findSurveyQuestion = findSurveyQuestionById(surveyAnswerQuestionCommand.getSurveyQuestionId());
+
+            List<SurveyAnswerQuestions> surveyAnswerQuestionsList = new ArrayList<>();
+            if (SurveyQuestionType.SHORT_ANSWER == surveyAnswerQuestionCommand.getSurveyQuestionType() || SurveyQuestionType.LONG_ANSWER == surveyAnswerQuestionCommand.getSurveyQuestionType()) {
+                surveyAnswerQuestionsList.add(createSurveyAnswerQuestion(surveyAnswerQuestionCommand, savedSurveyAnswer, findSurveyQuestion, null));
+            }
+            else {
+                for (Long surveyQuestionOptionId : surveyAnswerQuestionCommand.getSurveyQuestionOptionIds()) {
+                    surveyAnswerQuestionsList.add(createSurveyAnswerQuestion(surveyAnswerQuestionCommand, savedSurveyAnswer, findSurveyQuestion, findSurveyQuestionOptionById(surveyQuestionOptionId)));
+                }
+
+                if (surveyAnswerQuestionsList.isEmpty()) {
+                    surveyAnswerQuestionsList.add(createSurveyAnswerQuestion(surveyAnswerQuestionCommand, savedSurveyAnswer, findSurveyQuestion, null));
+                }
+            }
+            surveyAnswerQuestionsRepository.saveAll(surveyAnswerQuestionsList);
+        }
+    }
+
+    private void processPreviousQuestion(List<SurveyAnswerDetailResponse> result, SurveyQuestionType surveyQuestionType, String currentQuestionNm, List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList, int totalCnt) {
+        for (SurveyAnswerDetailResponse.AnswerCommand answerCommand : answerCommandList) {
+            answerCommand.updatePercent(totalCnt);
+        }
+
+        if (currentQuestionNm != null) {
+            result.add(SurveyAnswerDetailResponse.builder()
+                                                 .surveyQuestionType(surveyQuestionType)
+                                                 .questionNm(currentQuestionNm)
+                                                 .answers(answerCommandList)
+                                                 .build());
+        }
+    }
+
+    private void processAnswer(SurveyDetailAnswerCommand surveyDetailAnswerCommand, List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList) {
+        if (SurveyQuestionType.SINGLE_CHOICE == surveyDetailAnswerCommand.surveyQuestionType() || SurveyQuestionType.MULTIPLE_CHOICE == surveyDetailAnswerCommand.surveyQuestionType()) {
+            addChoiceAnswer(surveyDetailAnswerCommand, answerCommandList);
+        }
+        else if (SurveyQuestionType.SHORT_ANSWER == surveyDetailAnswerCommand.surveyQuestionType() || SurveyQuestionType.LONG_ANSWER == surveyDetailAnswerCommand.surveyQuestionType()) {
+            addShortAnswer(surveyDetailAnswerCommand, answerCommandList);
+        }
+    }
+
+    private void addChoiceAnswer(SurveyDetailAnswerCommand surveyDetailAnswerCommand, List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList) {
+        int count = surveyDetailAnswerCommand.selectedCnt().intValue();
+        answerCommandList.add(SurveyAnswerDetailResponse.AnswerCommand.builder()
+                                                                      .content("")
+                                                                      .optionNm(surveyDetailAnswerCommand.optionContent())
+                                                                      .count(count)
+                                                                      .build());
+    }
+
+    private void addShortAnswer(SurveyDetailAnswerCommand surveyDetailAnswerCommand, List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList) {
+        String answerContents = surveyDetailAnswerCommand.answerContents();
+        if (answerContents != null && !answerContents.isEmpty()) {
+            String[] individualAnswers = answerContents.replace("[", "").replace("]", "").replace("\"", "").split(",");
+            for (String individualAnswer : individualAnswers) {
+                answerCommandList.add(SurveyAnswerDetailResponse.AnswerCommand.builder()
+                                                                              .content(individualAnswer.trim())
+                                                                              .optionNm("")
+                                                                              .build());
+            }
+        }
     }
 }

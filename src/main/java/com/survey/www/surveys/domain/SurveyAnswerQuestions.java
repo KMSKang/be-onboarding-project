@@ -24,7 +24,7 @@ public class SurveyAnswerQuestions extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")
-    private SurveyAnswer surveyAnswer;
+    private SurveyAnswers surveyAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
@@ -35,7 +35,7 @@ public class SurveyAnswerQuestions extends BaseEntity {
     private SurveyQuestionOptions surveyQuestionOptions;
 
     @Builder
-    public SurveyAnswerQuestions(Long id, String content, SurveyAnswer surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
+    public SurveyAnswerQuestions(Long id, String content, SurveyAnswers surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
         this.id = id;
         this.content = content;
         this.surveyAnswer = surveyAnswer;
