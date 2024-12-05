@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/surveys")
 @RestController
-public class SurveyApiController {
+public class SurveyApiController implements SurveyApi {
     private final SurveyService surveyService;
 
     @PostMapping
