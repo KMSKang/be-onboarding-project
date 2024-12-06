@@ -6,6 +6,7 @@ import com.survey.www.commons.response.CommonResponse;
 import com.survey.www.commons.response.InternalServerErrorResponse;
 import com.survey.www.commons.response.NotFoundResponse;
 import com.survey.www.surveys.dto.request.SurveyAnswerCreateRequest;
+import com.survey.www.surveys.dto.request.SurveyAnswerDetailRequest;
 import com.survey.www.surveys.dto.request.SurveyCreateRequest;
 import com.survey.www.surveys.dto.request.SurveyUpdateRequest;
 import com.survey.www.surveys.dto.response.*;
@@ -108,5 +109,5 @@ public interface SurveyApi {
                        , content = @Content(schema = @Schema(implementation = InternalServerErrorResponse.class)
                        , mediaType = MediaType.APPLICATION_JSON_VALUE))
     })
-    ResponseEntity<CommonResponse<List<SurveyAnswerDetailResponse>>> detailAnswer(@PathVariable("id") Long surveyId);
+    ResponseEntity<CommonResponse<List<SurveyAnswerDetailResponse>>> detailAnswer(@PathVariable("id") Long surveyId, SurveyAnswerDetailRequest surveyAnswerDetailRequest);
 }

@@ -7,6 +7,7 @@ import com.survey.www.surveys.domain.*;
 import com.survey.www.surveys.dto.command.SurveyDetailAnswerCommand;
 import com.survey.www.surveys.dto.command.SurveyDetailQuestionCommand;
 import com.survey.www.surveys.dto.request.SurveyAnswerCreateRequest;
+import com.survey.www.surveys.dto.request.SurveyAnswerDetailRequest;
 import com.survey.www.surveys.dto.request.SurveyCreateRequest;
 import com.survey.www.surveys.dto.request.SurveyUpdateRequest;
 import com.survey.www.surveys.dto.response.*;
@@ -65,9 +66,9 @@ public class SurveyService {
     }
 
     @Transactional(readOnly = true)
-    public List<SurveyAnswerDetailResponse> detailAnswer(Long surveyId) {
+    public List<SurveyAnswerDetailResponse> detailAnswer(Long surveyId, SurveyAnswerDetailRequest surveyAnswerDetailRequest) {
         List<SurveyAnswerDetailResponse> result = new ArrayList<>();
-        List<SurveyDetailAnswerCommand> surveyDetailAnswerCommands = surveyRepository.searchBySurveyId(surveyId);
+        List<SurveyDetailAnswerCommand> surveyDetailAnswerCommands = surveyRepository.searchBySurveyId(surveyId, surveyAnswerDetailRequest.getQuestionNm(), surveyAnswerDetailRequest.getOptionContent(), surveyAnswerDetailRequest.getAnswerContent());
 
         Long currentQuestionId = null;
         String currentQuestionNm = null;
@@ -76,11 +77,9 @@ public class SurveyService {
         int totalCnt = 0;
 
         for (SurveyDetailAnswerCommand surveyDetailAnswerCommand : surveyDetailAnswerCommands) {
-            // 새로운 질문이 나타나면 기존 데이터를 result에 추가
             if (!surveyDetailAnswerCommand.surveyQuestionId().equals(currentQuestionId)) {
                 processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionNm, answerCommandList, totalCnt);
 
-                // 새 질문 초기화
                 currentQuestionId = surveyDetailAnswerCommand.surveyQuestionId();
                 currentQuestionNm = surveyDetailAnswerCommand.questionNm();
                 currentSurveyQuestionType = surveyDetailAnswerCommand.surveyQuestionType();
@@ -88,12 +87,10 @@ public class SurveyService {
                 totalCnt = 0;
             }
 
-            // 선택형/서술형 질문 처리
             processAnswer(surveyDetailAnswerCommand, answerCommandList);
-            totalCnt += surveyDetailAnswerCommand.selectedCnt().intValue(); // 선택형에서만 count 증가
+            totalCnt += surveyDetailAnswerCommand.selectedCnt().intValue();
         }
 
-        // 마지막 질문 처리
         if (!answerCommandList.isEmpty() && currentQuestionNm != null) {
             processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionNm, answerCommandList, totalCnt);
         }
