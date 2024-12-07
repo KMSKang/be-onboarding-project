@@ -28,6 +28,7 @@ public class SurveyCreateRequest {
         return Survey.builder()
                      .surveyNm(surveyNm)
                      .description(description)
+                     .isDeleted(Boolean.FALSE)
                      .account(account)
                      .build();
     }
@@ -62,7 +63,7 @@ public class SurveyCreateRequest {
                                   .description(description)
                                   .surveyQuestionType(surveyQuestionType)
                                   .isRequired(isRequired)
-                                  .isRequired(isDeleted)
+                                  .isDeleted(isDeleted)
                                   .survey(survey)
                                   .build();
         }
