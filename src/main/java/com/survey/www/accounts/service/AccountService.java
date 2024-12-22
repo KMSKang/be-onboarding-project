@@ -19,14 +19,4 @@ public class AccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return accountRepository.findById(((LoginUser) authentication.getPrincipal()).getAccount().getId()).orElseThrow(() -> new AccountException(AccountExceptionResult.NOT_FOUND_ACCOUNT));
     }
-
-    private Account savedAccount(String phone) {
-        return accountRepository.save(createAccount(phone));
-    }
-
-    private Account createAccount(String phone) {
-        return Account.builder()
-                      .phone(phone)
-                      .build();
-    }
 }

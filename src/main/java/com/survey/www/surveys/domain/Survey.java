@@ -4,7 +4,9 @@ import com.survey.www.accounts.domain.Account;
 import com.survey.www.commons.domain.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Schema(description = "설문조사 관리를 위한 도메인 객체")
 @Getter
@@ -32,17 +34,20 @@ public class Survey extends BaseEntity {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    public void update(String surveyName, String description) {
-        this.surveyName = surveyName;
-        this.description = description;
-    }
-
-    @Builder
-    public Survey(Long id, String surveyName, String description, Boolean isDeleted, Account account) {
+    private Survey(Long id, String surveyName, String description, Boolean isDeleted, Account account) {
         this.id = id;
         this.surveyName = surveyName;
         this.description = description;
         this.isDeleted = isDeleted;
         this.account = account;
+    }
+
+    public static Survey create(String surveyName, String description, Boolean isDeleted, Account account) {
+        return new Survey(null, surveyName, description, isDeleted, account);
+    }
+
+    public void update(String surveyName, String description) {
+        this.surveyName = surveyName;
+        this.description = description;
     }
 }

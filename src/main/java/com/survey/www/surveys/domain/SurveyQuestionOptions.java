@@ -27,12 +27,15 @@ public class SurveyQuestionOptions extends BaseEntity {
     @JoinColumn(name = "question_id")
     private SurveyQuestions surveyQuestions;
 
-    @Builder
-    public SurveyQuestionOptions(Long id, String content, Boolean isDeleted, SurveyQuestions surveyQuestions) {
+    private SurveyQuestionOptions(Long id, String content, Boolean isDeleted, SurveyQuestions surveyQuestions) {
         this.id = id;
         this.content = content;
         this.isDeleted = isDeleted;
         this.surveyQuestions = surveyQuestions;
+    }
+
+    public static SurveyQuestionOptions create(String content, Boolean isDeleted, SurveyQuestions surveyQuestions) {
+        return new SurveyQuestionOptions(null, content, isDeleted, surveyQuestions);
     }
 
     public void update(String content, Boolean isDeleted) {

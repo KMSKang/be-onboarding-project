@@ -4,7 +4,6 @@ import com.survey.www.commons.domain.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,9 +25,13 @@ public class SurveyAnswers extends BaseEntity {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @Builder
-    public SurveyAnswers(Long id, Survey survey) {
+    private SurveyAnswers(Long id, Boolean isDeleted, Survey survey) {
         this.id = id;
+        this.isDeleted = isDeleted;
         this.survey = survey;
+    }
+
+    public static SurveyAnswers create(Boolean isDeleted, Survey survey) {
+        return new SurveyAnswers(null, isDeleted, survey);
     }
 }

@@ -29,10 +29,6 @@ public class JwtService {
                                    .verify(token);
         Long id = decodedJWT.getClaim("id").asLong();
         String role = decodedJWT.getClaim("role").asString();
-        Account account = Account.builder()
-                                 .id(id)
-                                 .roleType(RoleType.valueOf(role))
-                                 .build();
-        return new LoginUser(account);
+        return new LoginUser(Account.login(id, RoleType.valueOf(role)));
     }
 }

@@ -41,8 +41,7 @@ public class SurveyQuestions extends BaseEntity {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @Builder
-    public SurveyQuestions(Long id, String questionName, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted, Survey survey) {
+    private SurveyQuestions(Long id, String questionName, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted, Survey survey) {
         this.id = id;
         this.questionName = questionName;
         this.description = description;
@@ -50,6 +49,10 @@ public class SurveyQuestions extends BaseEntity {
         this.isRequired = isRequired;
         this.isDeleted = isDeleted;
         this.survey = survey;
+    }
+
+    public static SurveyQuestions create(String questionName, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted, Survey survey) {
+        return new SurveyQuestions(null, questionName, description, surveyQuestionType, isRequired, isDeleted, survey);
     }
 
     public void update(String questionName, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted) {

@@ -1,5 +1,5 @@
 insert into account (created_at, id, updated_at, phone, user_pw, role_type)
-values  ('2024-11-26 21:21:04.395143', 1, '2024-11-26 21:21:04.395143', '01099841511', '$2a$10$Z.a9jjs63WT/J2g.xaZwJeV5sd18KBQbZcXzlvrZG1wiJiiEw23fO', 'WRITER');
+values  ('2024-11-26 21:21:04.395143', 1, '2024-11-26 21:21:04.395143', '01012345678', '$2a$10$Z.a9jjs63WT/J2g.xaZwJeV5sd18KBQbZcXzlvrZG1wiJiiEw23fO', 'WRITER');
 
 insert into survey (is_deleted, account_id, created_at, id, updated_at, description, survey_nm)
 values  (false, 1, '2024-11-26 21:21:04.471878', 1, '2024-11-26 21:21:04.471878', '안녕하세요? 😊 패스트캠퍼스입니다.
@@ -78,7 +78,7 @@ values  (false, '2024-11-26 21:21:04.511798', 1, 1, '2024-11-26 21:21:04.511798'
 
 
 insert into account (created_at, id, updated_at, phone, user_pw, role_type)
-values  ('2024-11-26 21:21:04.395143', 2, '2024-11-26 21:21:04.395143', '01099841511', '$2a$10$Z.a9jjs63WT/J2g.xaZwJeV5sd18KBQbZcXzlvrZG1wiJiiEw23fO', 'WRITER');
+values  ('2024-11-26 21:21:04.395143', 2, '2024-11-26 21:21:04.395143', '01012345678', '$2a$10$Z.a9jjs63WT/J2g.xaZwJeV5sd18KBQbZcXzlvrZG1wiJiiEw23fO', 'WRITER');
 
 insert into survey (is_deleted, account_id, created_at, id, updated_at, description, survey_nm)
 values  (false, 1, '2024-11-26 21:21:04.471878', 2, '2024-11-26 21:21:04.471878', '안녕하세요? 😊 패스트캠퍼스입니다.

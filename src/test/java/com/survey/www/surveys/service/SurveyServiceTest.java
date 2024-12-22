@@ -8,11 +8,11 @@ import com.survey.www.surveys.code.SurveyQuestionType;
 import com.survey.www.surveys.domain.Survey;
 import com.survey.www.surveys.domain.SurveyQuestionOptions;
 import com.survey.www.surveys.domain.SurveyQuestions;
+import com.survey.www.surveys.dto.request.SurveyAnswerCreateRequest;
+import com.survey.www.surveys.dto.request.SurveyAnswerDetailRequest;
 import com.survey.www.surveys.dto.request.SurveyCreateRequest;
 import com.survey.www.surveys.dto.request.SurveyUpdateRequest;
-import com.survey.www.surveys.dto.response.SurveyCreateResponse;
-import com.survey.www.surveys.dto.response.SurveyQuestionDetailResponse;
-import com.survey.www.surveys.dto.response.SurveyUpdateResponse;
+import com.survey.www.surveys.dto.response.*;
 import com.survey.www.surveys.repository.SurveyQuestionsOptionsRepository;
 import com.survey.www.surveys.repository.SurveyQuestionsRepository;
 import com.survey.www.surveys.repository.SurveyRepository;
@@ -53,161 +53,119 @@ class SurveyServiceTest extends MyRestDoc {
         createData();
     }
 
-    @WithUserDetails(value = "01099841511", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "01012345678", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     @DisplayName("설문조사 생성 API")
     void createQuestion() {
         // given
-        List<SurveyCreateRequest.SurveyQuestionOptionCommand> surveyQuestionOptionRequests1 = List.of(
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("동의합니다.").isDeleted(Boolean.FALSE).build()
-        );
-
-        List<SurveyCreateRequest.SurveyQuestionOptionCommand> surveyQuestionOptionRequests2 = List.of(
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("동의합니다.").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("동의하지 않습니다.").isDeleted(Boolean.FALSE).build()
-        );
-
-        List<SurveyCreateRequest.SurveyQuestionOptionCommand> surveyQuestionOptionRequests6 = List.of(
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("예, 참여하겠습니다.").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("아니오, 참여하지 않겠습니다. (하단의 사유 관련 질문 필수 응답)").isDeleted(Boolean.FALSE).build()
-        );
-
-        List<SurveyCreateRequest.SurveyQuestionOptionCommand> surveyQuestionOptionRequests7 = List.of(
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("고등학교 졸업").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학교 재학").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학교 졸업 예정").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학교 졸업").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학원 재학").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학원 졸업 예정").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학원 졸업").isDeleted(Boolean.FALSE).build()
-        );
-
-        List<SurveyCreateRequest.SurveyQuestionOptionCommand> surveyQuestionOptionRequests8 = List.of(
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("내일배움카드 보유").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("K-디지털트레이닝패스 보유").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("무 (발급 진행 중)").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("무 (미신청)").isDeleted(Boolean.FALSE).build()
-        );
-
-        List<SurveyCreateRequest.SurveyQuestionOptionCommand> surveyQuestionOptionRequests10 = List.of(
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("실무 역량 향상이 기대되는 커리큘럼").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("검증된 실력의 강사진").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("커리어 관련 지원 (자기소개서, 포트폴리오, 면접 준비 등의 커리어 서비스)").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("이상적인 실무를 경험할 수 있는 팀 프로젝트").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("팀원들과 협업할 수 있는 환경").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("꼼꼼하게 관리해주는 과정 운영진").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("패스트캠퍼스의 공신력").isDeleted(Boolean.FALSE).build(),
-                SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("기타").isDeleted(Boolean.FALSE).build()
-        );
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest1 =
+        List<SurveyCreateRequest.SurveyQuestionCommand> surveyQuestions = List.of(
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("[필수] 개인정보 수집 및 이용 동의")
                                                          .description(generateDescriptionForSurveyQuestions1())
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
-                                                         .surveyQuestionOptions(surveyQuestionOptionRequests1)
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest2 =
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("동의합니다.").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("[선택] 개인정보 마케팅 활용 동의")
                                                          .description(generateDescriptionForSurveyQuestions2())
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.FALSE)
-                                                         .surveyQuestionOptions(surveyQuestionOptionRequests2)
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest3 =
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("동의합니다.").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("동의하지 않습니다.").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("성함을 작성해 주세요.")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
                                                          .isRequired(Boolean.FALSE)
                                                          .surveyQuestionOptions(List.of())
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest4 =
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("연락처를 작성해 주세요.")
                                                          .description("ex) 010-0000-0000")
                                                          .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
                                                          .isRequired(Boolean.TRUE)
                                                          .surveyQuestionOptions(List.of())
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest5 =
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("이메일 주소를 작성해 주세요.")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
                                                          .isRequired(Boolean.TRUE)
                                                          .surveyQuestionOptions(List.of())
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest6 =
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("최종 과정 합류 의사를 선택해 주세요.")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
-                                                         .surveyQuestionOptions(surveyQuestionOptionRequests6)
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest7 =
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("예, 참여하겠습니다.").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("아니오, 참여하지 않겠습니다. (하단의 사유 관련 질문 필수 응답)").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("학력 사항을 선택해 주세요.")
                                                          .description("* 졸업 예정자란, 모집공고일을 기준으로 재학 중에 있으나 마지막 학기를 다니는 중이거나, 마지막 학기를 마쳤지만 졸업은 안한 상태인 자를 의미합니다.")
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
-                                                         .surveyQuestionOptions(surveyQuestionOptionRequests7)
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest8 =
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("고등학교 졸업").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학교 재학").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학교 졸업 예정").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학교 졸업").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학원 재학").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학원 졸업 예정").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("대학원 졸업").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.")
                                                          .description(generateDescriptionForSurveyQuestions8())
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
-                                                         .surveyQuestionOptions(surveyQuestionOptionRequests8)
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest9 =
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("내일배움카드 보유").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("K-디지털트레이닝패스 보유").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("무 (발급 진행 중)").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("무 (미신청)").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("경력 사항을 입력해 주세요.")
                                                          .description(generateDescriptionForSurveyQuestions9())
                                                          .surveyQuestionType(SurveyQuestionType.LONG_ANSWER)
                                                          .isRequired(Boolean.TRUE)
                                                          .surveyQuestionOptions(List.of())
-                                                         .build();
-
-        SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest10 =
+                                                         .build(),
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
                                                          .questionName("본 교육 과정을 지원하게 된 사유는 무엇인가요?")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
-                                                         .surveyQuestionOptions(surveyQuestionOptionRequests10)
-                                                         .build();
-
-        List<SurveyCreateRequest.SurveyQuestionCommand> surveyQuestionRequestList = List.of(
-                surveyQuestionRequest1,
-                surveyQuestionRequest2,
-                surveyQuestionRequest3,
-                surveyQuestionRequest4,
-                surveyQuestionRequest5,
-                surveyQuestionRequest6,
-                surveyQuestionRequest7,
-                surveyQuestionRequest8,
-                surveyQuestionRequest9,
-                surveyQuestionRequest10
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("실무 역량 향상이 기대되는 커리큘럼").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("검증된 실력의 강사진").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("커리어 관련 지원 (자기소개서, 포트폴리오, 면접 준비 등의 커리어 서비스)").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("이상적인 실무를 경험할 수 있는 팀 프로젝트").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("팀원들과 협업할 수 있는 환경").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("꼼꼼하게 관리해주는 과정 운영진").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("패스트캠퍼스의 공신력").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyCreateRequest.SurveyQuestionOptionCommand.builder().content("기타").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build()
         );
 
         SurveyCreateRequest surveyCreateRequest = SurveyCreateRequest.builder()
-                .surveyName("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사")
-                .description(generateDescriptionForSurvey())
-                .surveyQuestions(surveyQuestionRequestList)
-                .build();
+                                                                     .surveyName("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사")
+                                                                     .description(generateDescriptionForSurvey())
+                                                                     .surveyQuestions(surveyQuestions)
+                                                                     .build();
 
         // when
         SurveyCreateResponse surveyCreateResponse = surveyService.createQuestion(surveyCreateRequest);
@@ -238,12 +196,118 @@ class SurveyServiceTest extends MyRestDoc {
         // given
         Long surveyId = 1L;
 
-        List<SurveyUpdateRequest.SurveyQuestionOptionCommand> surveyQuestionOptions = List.of(
-                SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(1L).content("동의합니다.1111").isDeleted(Boolean.FALSE).build()
-        );
-
         List<SurveyUpdateRequest.SurveyQuestionCommand> surveyQuestions = List.of(
-                SurveyUpdateRequest.SurveyQuestionCommand.builder().id(1L).questionName("[필수] 개인정보 수집 및 이용 동의1111").description(generateDescriptionForSurveyQuestions1()+"1111").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).surveyQuestionOptions(surveyQuestionOptions).build()
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(1L)
+                                                         .questionName("[필수] 개인정보 수집 및 이용 동의1111")
+                                                         .description(generateDescriptionForSurveyQuestions1()+"1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(1L).content("동의합니다.1111").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(2L)
+                                                         .questionName("[선택] 개인정보 마케팅 활용 동의1111")
+                                                         .description(generateDescriptionForSurveyQuestions2() + "1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.FALSE)
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(2L).content("동의합니다.1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(3L).content("동의하지 않습니다.1111").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(3L)
+                                                         .questionName("성함을 작성해 주세요.1111")
+                                                         .description("1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                         .isRequired(Boolean.FALSE)
+                                                         .surveyQuestionOptions(List.of())
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(4L)
+                                                         .questionName("연락처를 작성해 주세요.1111")
+                                                         .description("ex) 010-1111-1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .surveyQuestionOptions(List.of())
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(5L)
+                                                         .questionName("이메일 주소를 작성해 주세요.1111")
+                                                         .description("1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .surveyQuestionOptions(List.of())
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(6L)
+                                                         .questionName("최종 과정 합류 의사를 선택해 주세요.1111")
+                                                         .description("1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(4L).content("예, 참여하겠습니다.1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(5L).content("아니오, 참여하지 않겠습니다. (하단의 사유 관련 질문 필수 응답)1111").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(7L)
+                                                         .questionName("학력 사항을 선택해 주세요.1111")
+                                                         .description("* 졸업 예정자란, 모집공고일을 기준으로 재학 중에 있으나 마지막 학기를 다니는 중이거나, 마지막 학기를 마쳤지만 졸업은 안한 상태인 자를 의미합니다.1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(6L).content("고등학교 졸업1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(7L).content("대학교 재학1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(8L).content("대학교 졸업 예정1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(9L).content("대학교 졸업1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(10L).content("대학원 재학1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(11L).content("대학원 졸업 예정1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(12L).content("대학원 졸업1111").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(8L)
+                                                         .questionName("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.1111")
+                                                         .description(generateDescriptionForSurveyQuestions8() + "1111")
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(13L).content("내일배움카드 보유1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(14L).content("K-디지털트레이닝패스 보유1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(15L).content("무 (발급 진행 중)1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(16L).content("무 (미신청)1111").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(9L)
+                                                         .questionName("경력 사항을 입력해 주세요.1111")
+                                                         .description(generateDescriptionForSurveyQuestions9())
+                                                         .surveyQuestionType(SurveyQuestionType.LONG_ANSWER)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .surveyQuestionOptions(List.of())
+                                                         .build(),
+                SurveyUpdateRequest.SurveyQuestionCommand.builder()
+                                                         .id(10L)
+                                                         .questionName("본 교육 과정을 지원하게 된 사유는 무엇인가요?1111")
+                                                         .description("")
+                                                         .surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .surveyQuestionOptions(List.of(
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(17L).content("실무 역량 향상이 기대되는 커리큘럼1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(18L).content("검증된 실력의 강사진1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(19L).content("커리어 관련 지원 (자기소개서, 포트폴리오, 면접 준비 등의 커리어 서비스)1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(20L).content("이상적인 실무를 경험할 수 있는 팀 프로젝트1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(21L).content("팀원들과 협업할 수 있는 환경1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(22L).content("꼼꼼하게 관리해주는 과정 운영진1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(23L).content("패스트캠퍼스의 공신력1111").isDeleted(Boolean.FALSE).build(),
+                                                                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(24L).content("기타1111").isDeleted(Boolean.FALSE).build()
+                                                         ))
+                                                         .build()
         );
 
         SurveyUpdateRequest surveyUpdateRequest = SurveyUpdateRequest.builder()
@@ -264,98 +328,405 @@ class SurveyServiceTest extends MyRestDoc {
     @DisplayName("설문조사 응답 제출 API")
     void createAnswer() {
         // given
+        Long surveyId = 1L;
+        Long surveyAnswerId = 1L;
+
+        List<SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand> surveyAnswerQuestions = List.of(
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                                     .content("")
+                                                                     .surveyQuestionId(1L)
+                                                                     .surveyQuestionOptionIds(List.of(
+                                                                             1L
+                                                                     ))
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.FALSE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                                     .content("")
+                                                                     .surveyQuestionId(2L)
+                                                                     .surveyQuestionOptionIds(List.of())
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                                     .content("홍길동")
+                                                                     .surveyQuestionId(3L)
+                                                                     .surveyQuestionOptionIds(List.of())
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                                     .content("010-1111-1111")
+                                                                     .surveyQuestionId(4L)
+                                                                     .surveyQuestionOptionIds(List.of())
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.FALSE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                                     .content("")
+                                                                     .surveyQuestionId(5L)
+                                                                     .surveyQuestionOptionIds(List.of())
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                                     .content("")
+                                                                     .surveyQuestionId(6L)
+                                                                     .surveyQuestionOptionIds(List.of(
+                                                                             4L
+                                                                     ))
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                                     .content("")
+                                                                     .surveyQuestionId(7L)
+                                                                     .surveyQuestionOptionIds(List.of(
+                                                                             6L
+                                                                     ))
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                                     .content("")
+                                                                     .surveyQuestionId(8L)
+                                                                     .surveyQuestionOptionIds(List.of(
+                                                                             13L
+                                                                     ))
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.LONG_ANSWER)
+                                                                     .content("신입")
+                                                                     .surveyQuestionId(9L)
+                                                                     .surveyQuestionOptionIds(List.of())
+                                                                     .build(),
+                SurveyAnswerCreateRequest.SurveyAnswerQuestionCommand.builder()
+                                                                     .surveyAnswerId(surveyAnswerId)
+                                                                     .isRequired(Boolean.TRUE)
+                                                                     .surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE)
+                                                                     .content("")
+                                                                     .surveyQuestionId(10L)
+                                                                     .surveyQuestionOptionIds(List.of(
+                                                                             17L,
+                                                                             18L
+                                                                     ))
+                                                                     .build()
+        );
+
+        SurveyAnswerCreateRequest surveyAnswerCreateRequest = SurveyAnswerCreateRequest.builder()
+                                                                                       .surveyAnswerQuestions(surveyAnswerQuestions)
+                                                                                       .build();
 
         // when
+        SurveyAnswerCreateResponse surveyAnswerCreateResponse = surveyService.createAnswer(surveyId, surveyAnswerCreateRequest);
 
         // then
+        assertThat(surveyAnswerCreateResponse.id()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("설문조사 응답 조회 API")
+    void detailAnswer() {
+        // when
+        Long surveyId = 1L;
+        SurveyAnswerDetailRequest surveyAnswerDetailRequest = SurveyAnswerDetailRequest.builder()
+                                                                                       .questionName("")
+                                                                                       .optionContent("")
+                                                                                       .answerContent("")
+                                                                                       .build();
+
+        // when
+        List<SurveyAnswerDetailResponse> surveyAnswerDetailResponses = surveyService.detailAnswer(surveyId, surveyAnswerDetailRequest);
+
+        // then
+        assertThat(surveyAnswerDetailResponses.size()).isEqualTo(10);
     }
 
     private void createData() {
-        //Account account = Account.builder().roleType(RoleType.WRITER).phone("01099841511").questionName(passwordEncoder.encode("1234")).build();
-        Account account = Account.create(RoleType.WRITER, "01099841511", passwordEncoder.encode("1234"));
-        Account saveAccount = accountRepository.save(account);
+        Account createAccount = Account.create(RoleType.WRITER, "01012345678", passwordEncoder.encode("1234"));
+        Account savedAccount = accountRepository.save(createAccount);
 
-        Survey survey = Survey.builder().surveyName("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사").description(generateDescriptionForSurvey()).isDeleted(Boolean.FALSE).account(saveAccount).build();
-        Survey saveSurvey = surveyRepository.save(survey);
+        Survey createSurvey =
+                SurveyCreateRequest.builder()
+                                   .surveyName("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사")
+                                   .description(generateDescriptionForSurvey())
+                                   .isDeleted(Boolean.FALSE)
+                                   .surveyQuestions(List.of())
+                                   .build()
+                                   .toEntity(savedAccount);
+        Survey savedSurvey = surveyRepository.save(createSurvey);
 
         // 질문1) [필수] 개인정보 수집 및 이용 동의
-        SurveyQuestions surveyQuestions1 = SurveyQuestions.builder().questionName("[필수] 개인정보 수집 및 이용 동의").description(generateDescriptionForSurveyQuestions1()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions1 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("[필수] 개인정보 수집 및 이용 동의")
+                                                         .description(generateDescriptionForSurveyQuestions1())
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
+
         List<SurveyQuestionOptions> surveyQuestionOptions1 = List.of(
-                SurveyQuestionOptions.builder().content("동의합니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions1).build()
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("동의합니다.")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions1)
         );
         surveyQuestionsRepository.save(surveyQuestions1);
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions1);
 
         // 질문2) [선택] 개인정보 마케팅 활용 동의
-        SurveyQuestions surveyQuestions2 = SurveyQuestions.builder().questionName("[선택] 개인정보 마케팅 활용 동의").description(generateDescriptionForSurveyQuestions2()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.FALSE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions2 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("[선택] 개인정보 마케팅 활용 동의")
+                                                         .description(generateDescriptionForSurveyQuestions2())
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.FALSE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
+
         List<SurveyQuestionOptions> surveyQuestionOptions2 = List.of(
-                SurveyQuestionOptions.builder().content("동의합니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions2).build(),
-                SurveyQuestionOptions.builder().content("동의하지 않습니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions2).build()
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("동의합니다.")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions2),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("동의하지 않습니다.")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions2)
         );
         surveyQuestionsRepository.save(surveyQuestions2);
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions2);
 
         // 질문3) 성함을 작성해 주세요.
-        SurveyQuestions surveyQuestions3 = SurveyQuestions.builder().questionName("성함을 작성해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.FALSE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions3 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("성함을 작성해 주세요.")
+                                                         .description("")
+                                                         .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                         .isRequired(Boolean.FALSE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
         surveyQuestionsRepository.save(surveyQuestions3);
 
         // 질문4) 연락처를 작성해 주세요.
-        SurveyQuestions surveyQuestions4 = SurveyQuestions.builder().questionName("연락처를 작성해 주세요.").description("ex) 010-0000-0000").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions4 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("연락처를 작성해 주세요.")
+                                                         .description("ex) 010-0000-0000")
+                                                         .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
         surveyQuestionsRepository.save(surveyQuestions4);
 
         // 질문5) 이메일 주소를 작성해 주세요.
-        SurveyQuestions surveyQuestions5 = SurveyQuestions.builder().questionName("이메일 주소를 작성해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions5 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("이메일 주소를 작성해 주세요.")
+                                                         .description("")
+                                                         .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
         surveyQuestionsRepository.save(surveyQuestions5);
 
         // 질문6) 최종 과정 합류 의사를 선택해 주세요.
-        SurveyQuestions surveyQuestions6 = SurveyQuestions.builder().questionName("최종 과정 합류 의사를 선택해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions6 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("최종 과정 합류 의사를 선택해 주세요.")
+                                                         .description("")
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
+
         List<SurveyQuestionOptions> surveyQuestionOptions6 = List.of(
-                SurveyQuestionOptions.builder().content("예, 참여하겠습니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions6).build(),
-                SurveyQuestionOptions.builder().content("아니오, 참여하지 않겠습니다. (하단의 사유 관련 질문 필수 응답)").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions6).build()
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("예, 참여하겠습니다.")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions6),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("아니오, 참여하지 않겠습니다. (하단의 사유 관련 질문 필수 응답)")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions6)
         );
         surveyQuestionsRepository.save(surveyQuestions6);
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions6);
 
         // 질문7) 학력 사항을 선택해 주세요.
-        SurveyQuestions surveyQuestions7 = SurveyQuestions.builder().questionName("학력 사항을 선택해 주세요.").description("* 졸업 예정자란, 모집공고일을 기준으로 재학 중에 있으나 마지막 학기를 다니는 중이거나, 마지막 학기를 마쳤지만 졸업은 안한 상태인 자를 의미합니다.").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions7 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("학력 사항을 선택해 주세요.")
+                                                         .description("* 졸업 예정자란, 모집공고일을 기준으로 재학 중에 있으나 마지막 학기를 다니는 중이거나, 마지막 학기를 마쳤지만 졸업은 안한 상태인 자를 의미합니다.")
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
+
         List<SurveyQuestionOptions> surveyQuestionOptions7 = List.of(
-                SurveyQuestionOptions.builder().content("고등학교 졸업").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
-                SurveyQuestionOptions.builder().content("대학교 재학").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
-                SurveyQuestionOptions.builder().content("대학교 졸업 예정").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
-                SurveyQuestionOptions.builder().content("대학교 졸업").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
-                SurveyQuestionOptions.builder().content("대학원 재학").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
-                SurveyQuestionOptions.builder().content("대학원 졸업 예정").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
-                SurveyQuestionOptions.builder().content("대학원 졸업").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build()
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("고등학교 졸업")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions7),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("대학교 재학")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions7),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("대학교 졸업 예정")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions7),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("대학교 졸업")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions7),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("대학원 재학")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions7),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("대학원 졸업 예정")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions7),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("대학원 졸업")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions7)
         );
         surveyQuestionsRepository.save(surveyQuestions7);
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions7);
 
         // 질문8) 내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.
-        SurveyQuestions surveyQuestions8 = SurveyQuestions.builder().questionName("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.").description(generateDescriptionForSurveyQuestions8()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions8 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.")
+                                                         .description(generateDescriptionForSurveyQuestions8())
+                                                         .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
+
         List<SurveyQuestionOptions> surveyQuestionOptions8 = List.of(
-                SurveyQuestionOptions.builder().content("내일배움카드 보유").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions8).build(),
-                SurveyQuestionOptions.builder().content("K-디지털트레이닝패스 보유").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions8).build(),
-                SurveyQuestionOptions.builder().content("무 (발급 진행 중)").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions8).build(),
-                SurveyQuestionOptions.builder().content("무 (미신청)").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions8).build()
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("내일배움카드 보유")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions8),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("K-디지털트레이닝패스 보유")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions8),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("무 (발급 진행 중)")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions8),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("무 (미신청)")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions8)
         );
         surveyQuestionsRepository.save(surveyQuestions8);
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions8);
 
         // 질문9) 경력 사항을 입력해 주세요.
-        SurveyQuestions surveyQuestions9 = SurveyQuestions.builder().questionName("경력 사항을 입력해 주세요.").description(generateDescriptionForSurveyQuestions9()).surveyQuestionType(SurveyQuestionType.LONG_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions9 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("경력 사항을 입력해 주세요.")
+                                                         .description(generateDescriptionForSurveyQuestions9())
+                                                         .surveyQuestionType(SurveyQuestionType.LONG_ANSWER)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
         surveyQuestionsRepository.save(surveyQuestions9);
 
         // 질문10) 본 교육 과정을 지원하게 된 사유는 무엇인가요?
-        SurveyQuestions surveyQuestions10 = SurveyQuestions.builder().questionName("본 교육 과정을 지원하게 된 사유는 무엇인가요?").description("").surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions10 =
+                SurveyCreateRequest.SurveyQuestionCommand.builder()
+                                                         .questionName("본 교육 과정을 지원하게 된 사유는 무엇인가요?")
+                                                         .description("")
+                                                         .surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE)
+                                                         .isRequired(Boolean.TRUE)
+                                                         .isDeleted(Boolean.FALSE)
+                                                         .build()
+                                                         .toEntity(savedSurvey);
         List<SurveyQuestionOptions> surveyQuestionOptions10 = List.of(
-                SurveyQuestionOptions.builder().content("실무 역량 향상이 기대되는 커리큘럼").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
-                SurveyQuestionOptions.builder().content("검증된 실력의 강사진").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
-                SurveyQuestionOptions.builder().content("커리어 관련 지원 (자기소개서, 포트폴리오, 면접 준비 등의 커리어 서비스)").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
-                SurveyQuestionOptions.builder().content("이상적인 실무를 경험할 수 있는 팀 프로젝트").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
-                SurveyQuestionOptions.builder().content("팀원들과 협업할 수 있는 환경").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
-                SurveyQuestionOptions.builder().content("꼼꼼하게 관리해주는 과정 운영진").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
-                SurveyQuestionOptions.builder().content("패스트캠퍼스의 공신력").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
-                SurveyQuestionOptions.builder().content("기타").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build()
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("실무 역량 향상이 기대되는 커리큘럼")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("검증된 실력의 강사진")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("커리어 관련 지원 (자기소개서, 포트폴리오, 면접 준비 등의 커리어 서비스)")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("이상적인 실무를 경험할 수 있는 팀 프로젝트")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("팀원들과 협업할 수 있는 환경")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("꼼꼼하게 관리해주는 과정 운영진")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("패스트캠퍼스의 공신력")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10),
+                SurveyCreateRequest.SurveyQuestionOptionCommand.builder()
+                                                               .content("내일배움카드 보유")
+                                                               .isDeleted(Boolean.FALSE)
+                                                               .build()
+                                                               .toEntity(surveyQuestions10)
         );
         surveyQuestionsRepository.save(surveyQuestions10);
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions10);

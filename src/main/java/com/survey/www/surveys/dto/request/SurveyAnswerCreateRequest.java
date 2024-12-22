@@ -21,9 +21,7 @@ public class SurveyAnswerCreateRequest {
     private List<SurveyAnswerQuestionCommand> surveyAnswerQuestions = new ArrayList<>();
 
     public SurveyAnswers toEntity(Survey survey) {
-        return SurveyAnswers.builder()
-                            .survey(survey)
-                            .build();
+        return SurveyAnswers.create(Boolean.FALSE, survey);
     }
 
     @AllArgsConstructor
@@ -51,12 +49,7 @@ public class SurveyAnswerCreateRequest {
         private List<Long> surveyQuestionOptionIds = new ArrayList<>();
 
         public SurveyAnswerQuestions toEntity(SurveyAnswers surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
-            return SurveyAnswerQuestions.builder()
-                                        .content(content)
-                                        .surveyAnswer(surveyAnswer)
-                                        .surveyQuestions(surveyQuestions)
-                                        .surveyQuestionOptions(surveyQuestionOptions)
-                                        .build();
+            return SurveyAnswerQuestions.create(content, surveyAnswer, surveyQuestions, surveyQuestionOptions);
         }
     }
 }

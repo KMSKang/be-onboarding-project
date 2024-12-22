@@ -24,13 +24,12 @@ public class SurveyCreateRequest {
     @Schema(title = "항목", description = "설문 받을 항목입니다")
     private List<SurveyQuestionCommand> surveyQuestions;
 
+    @Schema(title = "삭제 여부", description = "삭제 여부입니다")
+    @Builder.Default
+    private Boolean isDeleted = Boolean.FALSE;
+
     public Survey toEntity(Account account) {
-        return Survey.builder()
-                     .surveyName(surveyName)
-                     .description(description)
-                     .isDeleted(Boolean.FALSE)
-                     .account(account)
-                     .build();
+        return Survey.create(surveyName, description, isDeleted, account);
     }
 
     @Builder
@@ -58,14 +57,7 @@ public class SurveyCreateRequest {
         private List<SurveyQuestionOptionCommand> surveyQuestionOptions = new ArrayList<>();
 
         public SurveyQuestions toEntity(Survey survey) {
-            return SurveyQuestions.builder()
-                                  .questionName(questionName)
-                                  .description(description)
-                                  .surveyQuestionType(surveyQuestionType)
-                                  .isRequired(isRequired)
-                                  .isDeleted(isDeleted)
-                                  .survey(survey)
-                                  .build();
+            return SurveyQuestions.create(questionName, description, surveyQuestionType, isRequired, isDeleted, survey);
         }
     }
 
@@ -83,11 +75,7 @@ public class SurveyCreateRequest {
         private Boolean isDeleted = Boolean.FALSE;
 
         public SurveyQuestionOptions toEntity(SurveyQuestions surveyQuestions) {
-            return SurveyQuestionOptions.builder()
-                                        .content(content)
-                                        .isDeleted(isDeleted)
-                                        .surveyQuestions(surveyQuestions)
-                                        .build();
+            return SurveyQuestionOptions.create(content, isDeleted, surveyQuestions);
         }
     }
 }

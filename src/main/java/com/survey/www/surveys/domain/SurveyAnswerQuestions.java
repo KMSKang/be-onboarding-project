@@ -4,7 +4,6 @@ import com.survey.www.commons.domain.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,12 +33,15 @@ public class SurveyAnswerQuestions extends BaseEntity {
     @JoinColumn(name = "question_option_id")
     private SurveyQuestionOptions surveyQuestionOptions;
 
-    @Builder
-    public SurveyAnswerQuestions(Long id, String content, SurveyAnswers surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
+    private SurveyAnswerQuestions(Long id, String content, SurveyAnswers surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
         this.id = id;
         this.content = content;
         this.surveyAnswer = surveyAnswer;
         this.surveyQuestions = surveyQuestions;
         this.surveyQuestionOptions = surveyQuestionOptions;
+    }
+
+    public static SurveyAnswerQuestions create(String content, SurveyAnswers surveyAnswer, SurveyQuestions surveyQuestions, SurveyQuestionOptions surveyQuestionOptions) {
+        return new SurveyAnswerQuestions(null, content, surveyAnswer, surveyQuestions, surveyQuestionOptions);
     }
 }

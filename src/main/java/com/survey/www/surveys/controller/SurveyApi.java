@@ -75,7 +75,7 @@ public interface SurveyApi {
                     , content = @Content(schema = @Schema(implementation = InternalServerErrorResponse.class)
                     , mediaType = MediaType.APPLICATION_JSON_VALUE))
     })
-    ResponseEntity<CommonResponse<SurveyUpdateResponse>> update(@PathVariable("id") Long surveyId, @RequestBody @Validated(ValidationSequence.class) SurveyUpdateRequest surveyUpdateRequest);
+    ResponseEntity<CommonResponse<SurveyUpdateResponse>> updateQuestion(@PathVariable("id") Long surveyId, @RequestBody @Validated(ValidationSequence.class) SurveyUpdateRequest surveyUpdateRequest);
 
     @Operation(summary = "설문조사 응답 제출 API", description = "설문조사 응답을 제출합니다")
     @ApiResponses({

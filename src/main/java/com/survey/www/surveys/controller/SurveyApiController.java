@@ -32,8 +32,8 @@ public class SurveyApiController implements SurveyApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CommonResponse<SurveyUpdateResponse>> update(@PathVariable("id") Long surveyId, @RequestBody @Validated(ValidationSequence.class) SurveyUpdateRequest surveyUpdateRequest) {
-        return ResponseEntity.ok(new CommonResponse<>(surveyService.update(surveyId, surveyUpdateRequest)));
+    public ResponseEntity<CommonResponse<SurveyUpdateResponse>> updateQuestion(@PathVariable("id") Long surveyId, @RequestBody @Validated(ValidationSequence.class) SurveyUpdateRequest surveyUpdateRequest) {
+        return ResponseEntity.ok(new CommonResponse<>(surveyService.updateQuestion(surveyId, surveyUpdateRequest)));
     }
 
     @PostMapping("/{id}/answers")
