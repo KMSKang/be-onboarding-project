@@ -5,7 +5,7 @@ import com.survey.www.surveys.code.SurveyQuestionType;
 
 public record SurveyDetailQuestionCommand(Long surveyQuestionId
                                 , SurveyQuestionType surveyQuestionType
-                                , String surveyQuestionNm
+                                , String surveyQuestionName
                                 , String surveyQuestionDescription
                                 , boolean isRequired
                                 , boolean isDeletedSurveyQuestion

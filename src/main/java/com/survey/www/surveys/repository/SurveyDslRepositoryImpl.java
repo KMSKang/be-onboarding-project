@@ -7,6 +7,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.survey.www.surveys.dto.command.QSurveyDetailAnswerCommand;
 import com.survey.www.surveys.dto.command.SurveyDetailAnswerCommand;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -21,11 +22,11 @@ public class SurveyDslRepositoryImpl implements SurveyDslRepository {
     private final JPAQueryFactory factory;
 
     @Override
-    public List<SurveyDetailAnswerCommand> searchBySurveyId(Long surveyId, String questionNm, String optionContent, String answerContent) {
+    public List<SurveyDetailAnswerCommand> searchBySurveyId(Long surveyId, String questionName, String optionContent, String answerContent) {
         return factory.select(new QSurveyDetailAnswerCommand(
                               surveyQuestions.id
                             , surveyQuestions.surveyQuestionType
-                            , surveyQuestions.questionNm
+                            , surveyQuestions.questionName
                             , surveyQuestionOptions.id.as("surveyQuestionOptionId")
                             , surveyQuestionOptions.content.as("optionContent")
                             , JPAExpressions.select(Expressions.stringTemplate("JSON_ARRAYAGG({0})", surveyAnswerQuestions.content))
@@ -42,7 +43,7 @@ public class SurveyDslRepositoryImpl implements SurveyDslRepository {
                       .leftJoin(surveyQuestions).on(surveyQuestions.survey.id.eq(survey.id))
                       .leftJoin(surveyQuestionOptions).on(surveyQuestionOptions.surveyQuestions.id.eq(surveyQuestions.id))
                       .where(survey.id.eq(surveyId)
-                           , isQuestionNmContains(questionNm)
+                           , isQuestionNameContains(questionName)
                            , isOptionContentContains(optionContent)
                            , isAnswerContentContains(answerContent)
                       )
@@ -50,12 +51,13 @@ public class SurveyDslRepositoryImpl implements SurveyDslRepository {
                       .fetch();
     }
 
-    private BooleanExpression isQuestionNmContains(String questionNm) {
-        if (questionNm == null || questionNm.isEmpty()) {
+    private BooleanExpression isQuestionNameContains(String questionName) {
+        //if (questionName == null || questionName.isEmpty()) {
+        if (StringUtils.isEmpty(questionName)) {
             return null;
         }
 
-        return surveyQuestions.questionNm.contains(questionNm);
+        return surveyQuestions.questionName.contains(questionName);
     }
 
     private BooleanExpression isOptionContentContains(String optionContent) {

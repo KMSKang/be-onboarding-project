@@ -102,7 +102,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest1 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("[필수] 개인정보 수집 및 이용 동의")
+                                                         .questionName("[필수] 개인정보 수집 및 이용 동의")
                                                          .description(generateDescriptionForSurveyQuestions1())
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
@@ -111,7 +111,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest2 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("[선택] 개인정보 마케팅 활용 동의")
+                                                         .questionName("[선택] 개인정보 마케팅 활용 동의")
                                                          .description(generateDescriptionForSurveyQuestions2())
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.FALSE)
@@ -120,7 +120,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest3 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("성함을 작성해 주세요.")
+                                                         .questionName("성함을 작성해 주세요.")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
                                                          .isRequired(Boolean.FALSE)
@@ -129,7 +129,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest4 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("연락처를 작성해 주세요.")
+                                                         .questionName("연락처를 작성해 주세요.")
                                                          .description("ex) 010-0000-0000")
                                                          .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
                                                          .isRequired(Boolean.TRUE)
@@ -138,7 +138,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest5 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("이메일 주소를 작성해 주세요.")
+                                                         .questionName("이메일 주소를 작성해 주세요.")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.SHORT_ANSWER)
                                                          .isRequired(Boolean.TRUE)
@@ -147,7 +147,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest6 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("최종 과정 합류 의사를 선택해 주세요.")
+                                                         .questionName("최종 과정 합류 의사를 선택해 주세요.")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
@@ -156,7 +156,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest7 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("학력 사항을 선택해 주세요.")
+                                                         .questionName("학력 사항을 선택해 주세요.")
                                                          .description("* 졸업 예정자란, 모집공고일을 기준으로 재학 중에 있으나 마지막 학기를 다니는 중이거나, 마지막 학기를 마쳤지만 졸업은 안한 상태인 자를 의미합니다.")
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
@@ -165,7 +165,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest8 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.")
+                                                         .questionName("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.")
                                                          .description(generateDescriptionForSurveyQuestions8())
                                                          .surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
@@ -174,7 +174,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest9 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("경력 사항을 입력해 주세요.")
+                                                         .questionName("경력 사항을 입력해 주세요.")
                                                          .description(generateDescriptionForSurveyQuestions9())
                                                          .surveyQuestionType(SurveyQuestionType.LONG_ANSWER)
                                                          .isRequired(Boolean.TRUE)
@@ -183,7 +183,7 @@ class SurveyServiceTest extends MyRestDoc {
 
         SurveyCreateRequest.SurveyQuestionCommand surveyQuestionRequest10 =
                 SurveyCreateRequest.SurveyQuestionCommand.builder()
-                                                         .questionNm("본 교육 과정을 지원하게 된 사유는 무엇인가요?")
+                                                         .questionName("본 교육 과정을 지원하게 된 사유는 무엇인가요?")
                                                          .description("")
                                                          .surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE)
                                                          .isRequired(Boolean.TRUE)
@@ -204,7 +204,7 @@ class SurveyServiceTest extends MyRestDoc {
         );
 
         SurveyCreateRequest surveyCreateRequest = SurveyCreateRequest.builder()
-                .surveyNm("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사")
+                .surveyName("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사")
                 .description(generateDescriptionForSurvey())
                 .surveyQuestions(surveyQuestionRequestList)
                 .build();
@@ -226,48 +226,60 @@ class SurveyServiceTest extends MyRestDoc {
         SurveyQuestionDetailResponse surveyQuestionDetailResponse = surveyService.detailQuestion(surveyId);
 
         // then
-        assertThat(surveyQuestionDetailResponse.getSurveyNm()).isEqualTo("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사");
+        assertThat(surveyQuestionDetailResponse.getSurveyName()).isEqualTo("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사");
         assertThat(surveyQuestionDetailResponse.getDescription()).isNotNull();
-        System.out.println(surveyQuestionDetailResponse);
+        assertThat(surveyQuestionDetailResponse.getIsDeleted()).isFalse();
+        assertThat(surveyQuestionDetailResponse.getSurveyQuestions().size()).isEqualTo(10);
     }
 
     @Test
     @DisplayName("설문조사 수정 API")
-    void update() {
+    void updateQuestion() {
         // given
         Long surveyId = 1L;
 
-        List<SurveyUpdateRequest.SurveyQuestionOptionCommand> surveyQuestionOptions1 = List.of(
+        List<SurveyUpdateRequest.SurveyQuestionOptionCommand> surveyQuestionOptions = List.of(
                 SurveyUpdateRequest.SurveyQuestionOptionCommand.builder().id(1L).content("동의합니다.1111").isDeleted(Boolean.FALSE).build()
         );
 
         List<SurveyUpdateRequest.SurveyQuestionCommand> surveyQuestions = List.of(
-                SurveyUpdateRequest.SurveyQuestionCommand.builder().id(1L).questionNm("[필수] 개인정보 수집 및 이용 동의1111").description(generateDescriptionForSurveyQuestions1()+"1111").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).surveyQuestionOptions(surveyQuestionOptions1).build()
+                SurveyUpdateRequest.SurveyQuestionCommand.builder().id(1L).questionName("[필수] 개인정보 수집 및 이용 동의1111").description(generateDescriptionForSurveyQuestions1()+"1111").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).surveyQuestionOptions(surveyQuestionOptions).build()
         );
 
         SurveyUpdateRequest surveyUpdateRequest = SurveyUpdateRequest.builder()
-                                                                     .surveyNm("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사1111")
+                                                                     .surveyName("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사1111")
                                                                      .description(generateDescriptionForSurvey() + "1111")
                                                                      .isDeleted(Boolean.FALSE)
                                                                      .surveyQuestions(surveyQuestions)
                                                                      .build();
 
         // when
-        SurveyUpdateResponse surveyUpdateResponse = surveyService.update(surveyId, surveyUpdateRequest);
+        SurveyUpdateResponse surveyUpdateResponse = surveyService.updateQuestion(surveyId, surveyUpdateRequest);
 
         // then
         assertThat(surveyUpdateResponse.id()).isNotNull();
     }
 
+    @Test
+    @DisplayName("설문조사 응답 제출 API")
+    void createAnswer() {
+        // given
+
+        // when
+
+        // then
+    }
+
     private void createData() {
-        Account account = Account.builder().roleType(RoleType.WRITER).phone("01099841511").userPw(passwordEncoder.encode("1234")).build();
+        //Account account = Account.builder().roleType(RoleType.WRITER).phone("01099841511").questionName(passwordEncoder.encode("1234")).build();
+        Account account = Account.create(RoleType.WRITER, "01099841511", passwordEncoder.encode("1234"));
         Account saveAccount = accountRepository.save(account);
 
-        Survey survey = Survey.builder().surveyNm("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사").description(generateDescriptionForSurvey()).isDeleted(Boolean.FALSE).account(saveAccount).build();
+        Survey survey = Survey.builder().surveyName("[패스트캠퍼스] INNER CIRCLE 풀스택 개발 코스 사전 조사").description(generateDescriptionForSurvey()).isDeleted(Boolean.FALSE).account(saveAccount).build();
         Survey saveSurvey = surveyRepository.save(survey);
 
         // 질문1) [필수] 개인정보 수집 및 이용 동의
-        SurveyQuestions surveyQuestions1 = SurveyQuestions.builder().questionNm("[필수] 개인정보 수집 및 이용 동의").description(generateDescriptionForSurveyQuestions1()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions1 = SurveyQuestions.builder().questionName("[필수] 개인정보 수집 및 이용 동의").description(generateDescriptionForSurveyQuestions1()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         List<SurveyQuestionOptions> surveyQuestionOptions1 = List.of(
                 SurveyQuestionOptions.builder().content("동의합니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions1).build()
         );
@@ -275,7 +287,7 @@ class SurveyServiceTest extends MyRestDoc {
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions1);
 
         // 질문2) [선택] 개인정보 마케팅 활용 동의
-        SurveyQuestions surveyQuestions2 = SurveyQuestions.builder().questionNm("[선택] 개인정보 마케팅 활용 동의").description(generateDescriptionForSurveyQuestions2()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.FALSE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions2 = SurveyQuestions.builder().questionName("[선택] 개인정보 마케팅 활용 동의").description(generateDescriptionForSurveyQuestions2()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.FALSE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         List<SurveyQuestionOptions> surveyQuestionOptions2 = List.of(
                 SurveyQuestionOptions.builder().content("동의합니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions2).build(),
                 SurveyQuestionOptions.builder().content("동의하지 않습니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions2).build()
@@ -284,19 +296,19 @@ class SurveyServiceTest extends MyRestDoc {
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions2);
 
         // 질문3) 성함을 작성해 주세요.
-        SurveyQuestions surveyQuestions3 = SurveyQuestions.builder().questionNm("성함을 작성해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.FALSE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions3 = SurveyQuestions.builder().questionName("성함을 작성해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.FALSE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         surveyQuestionsRepository.save(surveyQuestions3);
 
         // 질문4) 연락처를 작성해 주세요.
-        SurveyQuestions surveyQuestions4 = SurveyQuestions.builder().questionNm("연락처를 작성해 주세요.").description("ex) 010-0000-0000").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions4 = SurveyQuestions.builder().questionName("연락처를 작성해 주세요.").description("ex) 010-0000-0000").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         surveyQuestionsRepository.save(surveyQuestions4);
 
         // 질문5) 이메일 주소를 작성해 주세요.
-        SurveyQuestions surveyQuestions5 = SurveyQuestions.builder().questionNm("이메일 주소를 작성해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions5 = SurveyQuestions.builder().questionName("이메일 주소를 작성해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SHORT_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         surveyQuestionsRepository.save(surveyQuestions5);
 
         // 질문6) 최종 과정 합류 의사를 선택해 주세요.
-        SurveyQuestions surveyQuestions6 = SurveyQuestions.builder().questionNm("최종 과정 합류 의사를 선택해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions6 = SurveyQuestions.builder().questionName("최종 과정 합류 의사를 선택해 주세요.").description("").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         List<SurveyQuestionOptions> surveyQuestionOptions6 = List.of(
                 SurveyQuestionOptions.builder().content("예, 참여하겠습니다.").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions6).build(),
                 SurveyQuestionOptions.builder().content("아니오, 참여하지 않겠습니다. (하단의 사유 관련 질문 필수 응답)").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions6).build()
@@ -305,7 +317,7 @@ class SurveyServiceTest extends MyRestDoc {
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions6);
 
         // 질문7) 학력 사항을 선택해 주세요.
-        SurveyQuestions surveyQuestions7 = SurveyQuestions.builder().questionNm("학력 사항을 선택해 주세요.").description("* 졸업 예정자란, 모집공고일을 기준으로 재학 중에 있으나 마지막 학기를 다니는 중이거나, 마지막 학기를 마쳤지만 졸업은 안한 상태인 자를 의미합니다.").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions7 = SurveyQuestions.builder().questionName("학력 사항을 선택해 주세요.").description("* 졸업 예정자란, 모집공고일을 기준으로 재학 중에 있으나 마지막 학기를 다니는 중이거나, 마지막 학기를 마쳤지만 졸업은 안한 상태인 자를 의미합니다.").surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         List<SurveyQuestionOptions> surveyQuestionOptions7 = List.of(
                 SurveyQuestionOptions.builder().content("고등학교 졸업").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
                 SurveyQuestionOptions.builder().content("대학교 재학").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions7).build(),
@@ -319,7 +331,7 @@ class SurveyServiceTest extends MyRestDoc {
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions7);
 
         // 질문8) 내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.
-        SurveyQuestions surveyQuestions8 = SurveyQuestions.builder().questionNm("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.").description(generateDescriptionForSurveyQuestions8()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions8 = SurveyQuestions.builder().questionName("내일배움카드 혹은 K-디지털트레이닝패스 유무를 선택해 주세요.").description(generateDescriptionForSurveyQuestions8()).surveyQuestionType(SurveyQuestionType.SINGLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         List<SurveyQuestionOptions> surveyQuestionOptions8 = List.of(
                 SurveyQuestionOptions.builder().content("내일배움카드 보유").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions8).build(),
                 SurveyQuestionOptions.builder().content("K-디지털트레이닝패스 보유").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions8).build(),
@@ -330,11 +342,11 @@ class SurveyServiceTest extends MyRestDoc {
         surveyQuestionsOptionsRepository.saveAll(surveyQuestionOptions8);
 
         // 질문9) 경력 사항을 입력해 주세요.
-        SurveyQuestions surveyQuestions9 = SurveyQuestions.builder().questionNm("경력 사항을 입력해 주세요.").description(generateDescriptionForSurveyQuestions9()).surveyQuestionType(SurveyQuestionType.LONG_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions9 = SurveyQuestions.builder().questionName("경력 사항을 입력해 주세요.").description(generateDescriptionForSurveyQuestions9()).surveyQuestionType(SurveyQuestionType.LONG_ANSWER).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         surveyQuestionsRepository.save(surveyQuestions9);
 
         // 질문10) 본 교육 과정을 지원하게 된 사유는 무엇인가요?
-        SurveyQuestions surveyQuestions10 = SurveyQuestions.builder().questionNm("본 교육 과정을 지원하게 된 사유는 무엇인가요?").description("").surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.TRUE).survey(saveSurvey).build();
+        SurveyQuestions surveyQuestions10 = SurveyQuestions.builder().questionName("본 교육 과정을 지원하게 된 사유는 무엇인가요?").description("").surveyQuestionType(SurveyQuestionType.MULTIPLE_CHOICE).isRequired(Boolean.TRUE).isDeleted(Boolean.FALSE).survey(saveSurvey).build();
         List<SurveyQuestionOptions> surveyQuestionOptions10 = List.of(
                 SurveyQuestionOptions.builder().content("실무 역량 향상이 기대되는 커리큘럼").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),
                 SurveyQuestionOptions.builder().content("검증된 실력의 강사진").isDeleted(Boolean.FALSE).surveyQuestions(surveyQuestions10).build(),

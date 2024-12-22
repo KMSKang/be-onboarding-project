@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 public class SurveyQuestionDetailResponse {
-    private String surveyNm;
+    private String surveyName;
     private String description;
     private Boolean isDeleted;
     private List<SurveyQuestionCommand> surveyQuestions;
@@ -18,7 +18,7 @@ public class SurveyQuestionDetailResponse {
     @Builder
     public static class SurveyQuestionCommand {
         private Long id;
-        private String questionNm;
+        private String questionName;
         private String description;
         private SurveyQuestionType surveyQuestionType;
         private Boolean isRequired;

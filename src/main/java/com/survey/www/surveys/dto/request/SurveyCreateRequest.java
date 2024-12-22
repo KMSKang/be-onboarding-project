@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 public class SurveyCreateRequest {
     @Schema(title = "이름", description = "설문조사 이름입니다")
-    private String surveyNm;
+    private String surveyName;
 
     @Schema(title = "설명", description = "설문조사 설명입니다")
     private String description;
@@ -26,7 +26,7 @@ public class SurveyCreateRequest {
 
     public Survey toEntity(Account account) {
         return Survey.builder()
-                     .surveyNm(surveyNm)
+                     .surveyName(surveyName)
                      .description(description)
                      .isDeleted(Boolean.FALSE)
                      .account(account)
@@ -37,7 +37,7 @@ public class SurveyCreateRequest {
     @Getter
     public static class SurveyQuestionCommand {
         @Schema(title = "항목명", description = "항목 이름입니다")
-        private String questionNm;
+        private String questionName;
 
         @Schema(title = "설명", description = "항목 설명입니다")
         private String description;
@@ -59,7 +59,7 @@ public class SurveyCreateRequest {
 
         public SurveyQuestions toEntity(Survey survey) {
             return SurveyQuestions.builder()
-                                  .questionNm(questionNm)
+                                  .questionName(questionName)
                                   .description(description)
                                   .surveyQuestionType(surveyQuestionType)
                                   .isRequired(isRequired)

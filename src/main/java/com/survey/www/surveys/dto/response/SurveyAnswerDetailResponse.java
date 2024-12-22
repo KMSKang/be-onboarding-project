@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class SurveyAnswerDetailResponse {
     private SurveyQuestionType surveyQuestionType;
-    private String questionNm;
+    private String questionName;
     private List<AnswerCommand> answers;
 
     @Getter
@@ -21,9 +21,9 @@ public class SurveyAnswerDetailResponse {
         private int count;
         private double percent;
 
-        public void updatePercent(int totalCnt) {
-            if (totalCnt > 0) {
-                percent = Math.round((count * 100.0) / totalCnt * 100.0) / 100.0;
+        public void updatePercent(int totalCount) {
+            if (totalCount > 0) {
+                percent = Math.round((count * 100.0) / totalCount * 100.0) / 100.0;
             } else {
                 percent = 0.0;
             }

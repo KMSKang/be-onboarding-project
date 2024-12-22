@@ -50,7 +50,7 @@ public class SurveyService {
     }
 
     @Transactional
-    public SurveyUpdateResponse update(Long surveyId, SurveyUpdateRequest surveyUpdateRequest) {
+    public SurveyUpdateResponse updateQuestion(Long surveyId, SurveyUpdateRequest surveyUpdateRequest) {
         Survey findSurvey = findSurveyById(surveyId);
         updateSurvey(findSurvey, surveyUpdateRequest);
         updateSurveyQuestions(surveyUpdateRequest.getSurveyQuestions());
@@ -68,31 +68,31 @@ public class SurveyService {
     @Transactional(readOnly = true)
     public List<SurveyAnswerDetailResponse> detailAnswer(Long surveyId, SurveyAnswerDetailRequest surveyAnswerDetailRequest) {
         List<SurveyAnswerDetailResponse> result = new ArrayList<>();
-        List<SurveyDetailAnswerCommand> surveyDetailAnswerCommands = surveyRepository.searchBySurveyId(surveyId, surveyAnswerDetailRequest.getQuestionNm(), surveyAnswerDetailRequest.getOptionContent(), surveyAnswerDetailRequest.getAnswerContent());
+        List<SurveyDetailAnswerCommand> surveyDetailAnswerCommands = surveyRepository.searchBySurveyId(surveyId, surveyAnswerDetailRequest.getQuestionName(), surveyAnswerDetailRequest.getOptionContent(), surveyAnswerDetailRequest.getAnswerContent());
 
         Long currentQuestionId = null;
-        String currentQuestionNm = null;
+        String currentQuestionName = null;
         SurveyQuestionType currentSurveyQuestionType = null;
         List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList = new ArrayList<>();
-        int totalCnt = 0;
+        int totalCount = 0;
 
         for (SurveyDetailAnswerCommand surveyDetailAnswerCommand : surveyDetailAnswerCommands) {
             if (!surveyDetailAnswerCommand.surveyQuestionId().equals(currentQuestionId)) {
-                processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionNm, answerCommandList, totalCnt);
+                processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionName, answerCommandList, totalCount);
 
                 currentQuestionId = surveyDetailAnswerCommand.surveyQuestionId();
-                currentQuestionNm = surveyDetailAnswerCommand.questionNm();
+                currentQuestionName = surveyDetailAnswerCommand.questionName();
                 currentSurveyQuestionType = surveyDetailAnswerCommand.surveyQuestionType();
                 answerCommandList = new ArrayList<>();
-                totalCnt = 0;
+                totalCount = 0;
             }
 
             processAnswer(surveyDetailAnswerCommand, answerCommandList);
-            totalCnt += surveyDetailAnswerCommand.selectedCnt().intValue();
+            totalCount += surveyDetailAnswerCommand.selectedCount().intValue();
         }
 
-        if (!answerCommandList.isEmpty() && currentQuestionNm != null) {
-            processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionNm, answerCommandList, totalCnt);
+        if (!answerCommandList.isEmpty() && currentQuestionName != null) {
+            processPreviousQuestion(result, currentSurveyQuestionType, currentQuestionName, answerCommandList, totalCount);
         }
 
         return result;
@@ -106,14 +106,14 @@ public class SurveyService {
     }
 
     private void updateSurvey(Survey findSurvey, SurveyUpdateRequest surveyUpdateRequest) {
-        findSurvey.update(surveyUpdateRequest.getSurveyNm(), surveyUpdateRequest.getDescription());
+        findSurvey.update(surveyUpdateRequest.getSurveyName(), surveyUpdateRequest.getDescription());
     }
 
     private void updateSurveyQuestions(List<SurveyUpdateRequest.SurveyQuestionCommand> surveyQuestionCommands) {
         for (SurveyUpdateRequest.SurveyQuestionCommand surveyQuestionCommand : surveyQuestionCommands) {
             SurveyQuestions findSurveyQuestion = findSurveyQuestionById(surveyQuestionCommand.getId());
             findSurveyQuestion.update(
-                    surveyQuestionCommand.getQuestionNm(),
+                    surveyQuestionCommand.getQuestionName(),
                     surveyQuestionCommand.getDescription(),
                     surveyQuestionCommand.getSurveyQuestionType(),
                     surveyQuestionCommand.getIsRequired(),
@@ -199,7 +199,7 @@ public class SurveyService {
                     SurveyQuestionDetailResponse.SurveyQuestionCommand.builder()
                                                                       .id(surveyQuestionId)
                                                                       .surveyQuestionType(firstCommand.surveyQuestionType())
-                                                                      .questionNm(firstCommand.surveyQuestionNm())
+                                                                      .questionName(firstCommand.surveyQuestionName())
                                                                       .description(firstCommand.surveyQuestionDescription())
                                                                       .isRequired(firstCommand.isRequired())
                                                                       .isDeleted(firstCommand.isDeletedSurveyQuestion())
@@ -213,7 +213,7 @@ public class SurveyService {
 
     private static SurveyQuestionDetailResponse createSurveyDetailResponse(Survey survey, List<SurveyQuestionDetailResponse.SurveyQuestionCommand> surveyQuestions) {
         return SurveyQuestionDetailResponse.builder()
-                                           .surveyNm(survey.getSurveyNm())
+                                           .surveyName(survey.getSurveyName())
                                            .description(survey.getDescription())
                                            .isDeleted(survey.getIsDeleted())
                                            .surveyQuestions(surveyQuestions)
@@ -273,15 +273,15 @@ public class SurveyService {
         }
     }
 
-    private void processPreviousQuestion(List<SurveyAnswerDetailResponse> result, SurveyQuestionType surveyQuestionType, String currentQuestionNm, List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList, int totalCnt) {
+    private void processPreviousQuestion(List<SurveyAnswerDetailResponse> result, SurveyQuestionType surveyQuestionType, String currentQuestionName, List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList, int totalCount) {
         for (SurveyAnswerDetailResponse.AnswerCommand answerCommand : answerCommandList) {
-            answerCommand.updatePercent(totalCnt);
+            answerCommand.updatePercent(totalCount);
         }
 
-        if (currentQuestionNm != null) {
+        if (currentQuestionName != null) {
             result.add(SurveyAnswerDetailResponse.builder()
                                                  .surveyQuestionType(surveyQuestionType)
-                                                 .questionNm(currentQuestionNm)
+                                                 .questionName(currentQuestionName)
                                                  .answers(answerCommandList)
                                                  .build());
         }
@@ -297,7 +297,7 @@ public class SurveyService {
     }
 
     private void addChoiceAnswer(SurveyDetailAnswerCommand surveyDetailAnswerCommand, List<SurveyAnswerDetailResponse.AnswerCommand> answerCommandList) {
-        int count = surveyDetailAnswerCommand.selectedCnt().intValue();
+        int count = surveyDetailAnswerCommand.selectedCount().intValue();
         answerCommandList.add(SurveyAnswerDetailResponse.AnswerCommand.builder()
                                                                       .content("")
                                                                       .optionNm(surveyDetailAnswerCommand.optionContent())

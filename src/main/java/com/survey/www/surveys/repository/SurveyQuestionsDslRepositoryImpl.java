@@ -17,7 +17,7 @@ public class SurveyQuestionsDslRepositoryImpl implements SurveyQuestionsDslRepos
     public List<SurveyDetailQuestionCommand> searchBySurveyId(Long surveyId) {
         return factory.select(new QSurveyDetailQuestionCommand(surveyQuestions.id
                                                              , surveyQuestions.surveyQuestionType
-                                                             , surveyQuestions.questionNm
+                                                             , surveyQuestions.questionName
                                                              , surveyQuestions.description
                                                              , surveyQuestions.isRequired
                                                              , surveyQuestions.isDeleted

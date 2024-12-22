@@ -5,12 +5,12 @@ import com.survey.www.surveys.code.SurveyQuestionType;
 
 public record SurveyDetailAnswerCommand(Long surveyQuestionId
                                       , SurveyQuestionType surveyQuestionType
-                                      , String questionNm
+                                      , String questionName
                                       , Long surveyQuestionOptionId
                                       , String optionContent
                                       , String answerContents
-                                      , Long selectedCnt
-                                      , Long totalCnt
+                                      , Long selectedCount
+                                      , Long totalCount
 ) {
     @QueryProjection
     public SurveyDetailAnswerCommand {}

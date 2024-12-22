@@ -23,7 +23,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return account.getUserPw();
+        return account.getUserPassword();
     }
 
     @Override

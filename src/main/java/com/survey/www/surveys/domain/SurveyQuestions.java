@@ -18,7 +18,7 @@ public class SurveyQuestions extends BaseEntity {
 
     @Schema(title = "항목명", description = "항목 이름입니다")
     @Column(nullable = false)
-    private String questionNm;
+    private String questionName;
 
     @Schema(title = "설명", description = "항목 설명입니다")
     @Column(length = 1000)
@@ -42,9 +42,9 @@ public class SurveyQuestions extends BaseEntity {
     private Survey survey;
 
     @Builder
-    public SurveyQuestions(Long id, String questionNm, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted, Survey survey) {
+    public SurveyQuestions(Long id, String questionName, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted, Survey survey) {
         this.id = id;
-        this.questionNm = questionNm;
+        this.questionName = questionName;
         this.description = description;
         this.surveyQuestionType = surveyQuestionType;
         this.isRequired = isRequired;
@@ -52,8 +52,8 @@ public class SurveyQuestions extends BaseEntity {
         this.survey = survey;
     }
 
-    public void update(String questionNm, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted) {
-        this.questionNm = questionNm;
+    public void update(String questionName, String description, SurveyQuestionType surveyQuestionType, Boolean isRequired, Boolean isDeleted) {
+        this.questionName = questionName;
         this.description = description;
         this.surveyQuestionType = surveyQuestionType;
         this.isRequired = isRequired;

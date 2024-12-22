@@ -18,7 +18,7 @@ public class Survey extends BaseEntity {
 
     @Schema(title = "이름", description = "설문조사 이름입니다")
     @Column(nullable = false)
-    private String surveyNm;
+    private String surveyName;
 
     @Schema(title = "설명", description = "설문조사 설명입니다")
     @Column(nullable = false, length = 1000)
@@ -32,15 +32,15 @@ public class Survey extends BaseEntity {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    public void update(String surveyNm, String description) {
-        this.surveyNm = surveyNm;
+    public void update(String surveyName, String description) {
+        this.surveyName = surveyName;
         this.description = description;
     }
 
     @Builder
-    public Survey(Long id, String surveyNm, String description, Boolean isDeleted, Account account) {
+    public Survey(Long id, String surveyName, String description, Boolean isDeleted, Account account) {
         this.id = id;
-        this.surveyNm = surveyNm;
+        this.surveyName = surveyName;
         this.description = description;
         this.isDeleted = isDeleted;
         this.account = account;

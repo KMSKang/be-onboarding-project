@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class SurveyAnswerDetailRequest {
-    private String questionNm;
+    private String questionName;
     private String optionContent;
     private String answerContent;
 }
